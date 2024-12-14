@@ -1,0 +1,23 @@
+
+
+RENDER LIST
+
+  > use map() function
+
+  Example:
+
+  const NumbersList = ()
+
+
+
+
+
+  
+  users = [1,2,3,4]
+
+ <ul>
+ {users.map((user, index) => (
+    <li key={index}>{user}</li>
+ ))}
+ </ul>
+

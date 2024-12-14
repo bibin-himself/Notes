@@ -1,0 +1,248 @@
+
+
+HOOKS
+
+> Functions that provide functional components with the ability to use states, LC methods and manage side effects.
+
+> reuse logic 
+
+> useState : 
+  > Manage states. 
+  > Returns a STATEFUL VALUE and an UPDATER FUNCTION to update it.
+
+  > EXAMPLE: 
+            function Counter() {
+            const [count, setCount] = useState(0);
+
+             return (
+                <div>
+                <p>Count: {count}</p>
+                <button onClick={() => setCount(count + 1)} >Increment</button>
+                </div>
+            );
+            }
+
+
+
+
+> useEffect : 
+  > Manage side-effects like API calls, subscriptions, timers, mutations
+
+  > Mimic componentDidMount, componentDidUpdate, and componentWillUnmount
+  
+  > EXAMPLE:
+           function Timer() {
+           const [seconds, setSeconds] = useState(0);
+
+            useEffect(() => {
+                const interval = setInterval(() => {
+                setSeconds(prevSeconds => prevSeconds + 1);
+                }, 1000);
+
+                // Cleanup interval on unmount
+            return () => clearInterval(interval);
+            }, []); 
+             // Empty array means this effect only runs once on mount
+
+            return <p>Seconds: {seconds}</p>;
+            }
+
+
+
+///////////////////
+          const dataFetchComp = () => {
+              const [data, setData] = useState(null);
+              const [error, setError] = useState(null)
+
+              const fetchData = async () => {
+                setError(null);
+
+                try {
+                const response = await fetch ("data-end-point");
+
+                if(!response.ok){
+                  throw new Error("Some Issues");
+                }
+
+                const result = await response.json();
+                setData(result);
+              }catch(err){
+                setError(err.message)
+              }
+              }
+          
+
+          useEffect(() => {
+            fetchData();
+          }, [])
+
+
+          if (error) return <div>Error: {error}</div>; // Render error message
+
+          return <div>{data ? data.title : "Loading..."}</div>;
+          }
+
+          //// to implement data fetching throug button click, 
+          //// take fetchData() out of useEffect and add it in a button
+          
+/////////////////////////
+
+
+
+const calc = (a, b) => {
+  const add = a + b;
+  const sub = a - b;
+}
+
+calc(1,2);
+
+
+
+> useContext :
+  > Return the current value for a context.
+  > Allows you to ACCESS CONTEXT VALUES without having to pass props down manually
+  > create context ( createContext() ) -->  consume context ( contextname.provider )  --> Wrap the context
+  > useContext() used for access values
+
+
+  >EXAMPLE: 
+        import React, { useContext } from 'react';
+
+        const ThemeContext = React.createContext('light');
+
+        function ThemeSwitcher() {
+        const theme = useContext(ThemeContext);
+
+       return <p>Current theme: {theme}</p>;
+       }
+
+       export default function App() {
+       return (
+       <ThemeContext.Provider value="dark">
+       <ThemeSwitcher />
+       </ThemeContext.Provider>
+       );
+       }
+
+
+
+> useReducer : 
+  > similar to useState
+  > Manging complex state management
+  > use reducer functionngn
+  > Used when next state depends on previous state
+
+  >EXAMPLE : 
+            import React, { useReducer } from 'react';
+
+            const initialState = { count: 0 };
+
+            function reducer(state, action) {
+            switch (action.type) {
+                case 'increment':
+                return { count: state.count + 1 };
+                case 'decrement':
+                return { count: state.count - 1 };
+                default:
+                throw new Error();
+            }
+            }
+
+            function Counter() {
+            const [state, dispatch] = useReducer(reducer,initialState);
+
+            return (
+                <div>
+                <p>Count: {state.count}</p>
+                <button onClick={() => dispatch({ type:'increment' })}>Increment</button>
+                <button onClick={() => dispatch({ type:'decrement' })}>Decrement</button>
+                </div>
+            );
+            }
+
+> useRef : 
+  > Accesses DOM elements directly
+  > stores mutable values
+  > without triggering re-render
+
+
+
+> useMemo : 
+  > Optimizes performance by memoizing expensive calculations.
+  > memoize return value if no dependencies have changed.
+  > Memoizing means storing the value as a cached value 
+  > improves performance
+
+  >EXAMPLE : 
+            import React, { useMemo, useState } from 'react';
+
+            function calculate() {
+             let result = 0;
+             for (let i = 0; i < 1000000000; i++) {
+               result += i;
+             }
+             return result;
+           }
+
+           function App1() {
+             const [count, setCount] = useState(0);
+
+             const value = calculate();
+
+             return (
+               <div className="App">
+                 <button onClick={() => setCount(count + 1)}>Increment Count</button>
+                 <p>Count: {count}</p>
+               </div>
+             );
+           }
+
+           const value = useMemo(expensiveFunction, [...dependencyArray])
+
+
+            <!--- //////const [dependentCount, setDependentCount] = useState(10);////// ---!>
+
+
+           const value = useMemo(calculate, [dependentCount]);
+
+           return (
+             <div className="App">
+
+               // ...
+
+               <button onClick={() => setDependentCount(dependentCount + 1)}>
+                 Increment Dependent Count
+               </button>
+               <p>Dependent Count: {dependentCount}</p>
+             </div>
+           );
+
+
+
+
+
+> useCallback : 
+  > Memoizes a callback FUNCTION and returns it.
+  > Prevents unnecessary re-creations on re-renders.
+
+  >EXAMPLE : 
+             import React, { useCallback, useState } from 'react';
+
+             function Button({ onClick, label }) {
+               return <button onClick={onClick}>{label}</button>;
+             }
+
+             function App() {
+               const [count, setCount] = useState(0);
+
+               const handleClick = useCallback(() => {
+                 setCount(count + 1);
+               }, [count]);
+
+               return (
+                 <div>
+                   <p>Count: {count}</p>
+                   <Button onClick={handleClick} label="Increment" />
+                 </div>
+               );
+             }

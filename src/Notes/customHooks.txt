@@ -1,0 +1,13 @@
+
+
+
+Custom HOOKS
+
+    > For reuse stateful logic across components
+    > Extract logic from components 
+      and share it between components
+    > Without having to duplicate code.
+    > Always start with use
+
+
+      

@@ -1,0 +1,23 @@
+
+
+State in React
+
+> OBJECT that holds the DATA --- change overtime --- affects how a component renders.
+
+> Keep track dynamic data like user inputs, API data etc
+
+> When state changes, react re-renders the component to reflect new state.
+
+> Private and local: accessible within in the comp
+
+> Mutable: can be changed using this.setState() or useState() hook.
+
+> Triggers Re-renders: automatically re-renders when stete change
+
+> Asynchoronous
+
+
+<!-- //////////// -->
+
+
+

@@ -1,0 +1,140 @@
+
+
+> Manage routing in apps
+> for building SPA having multiple views
+> routes without loading entire page
+> install: npm i react-router-dom
+>     <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+
+
+      ////////////Routing Example\\\\\\\\\\\\
+
+// App.js
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import Home from './Home';
+import About from './About';
+import Contact from './Contact';
+
+function App() {
+  return (
+    <Router>
+      <nav>
+        <ul>
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/about">About</Link></li>
+          <li><Link to="/contact">Contact</Link></li>
+        </ul>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
+
+
+
+
+> BrowserRouter
+  > wraps the entire app and enables routing
+  > handles navigation
+  > import { BrowserRouter as Router } from 'react-router-dom';
+
+
+
+> Routes and Route
+  > define the routes in your app
+  > Each Route specifies a path and the component to render
+  > import { Routes, Route } from 'react-router-dom';
+
+
+
+> Link
+  > to create navigational links that update the URL 
+     without reloading
+  > import { Link } from 'react-router-dom';
+
+
+
+> useNavigate
+  > provides a way to programmatically navigate between routes
+  >  trigger navigation through JavaScript
+  > dynamic route changes based on conditions or user actions
+
+  > import { useNavigate } from 'react-router-dom';
+  > function Home() {
+      const navigate = useNavigate();
+
+      const goToContact = () => {
+        navigate('/contact');
+      };
+
+      return (
+        <div>
+          <h1>Home Page</h1>
+          <button onClick={goToContact}>Go to Contact</button>
+        </div>
+      );
+    }
+
+
+
+> useParams
+  > returns dynamic paramete of the URL
+  > product/productId
+
+  > Example
+
+   import React from 'react';
+import { useParams } from 'react-router-dom';
+
+function UserPage() {
+  // useParams gives access to the dynamic parts of the URL
+  const { id } = useParams();
+
+  return (
+    <div>
+      <h1>User Page</h1>
+      <p>Viewing user with ID: {id}</p>
+    </div>
+  );
+}
+
+export default UserPage;
+
+
+
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+const ProductList = () => {
+  const products = [
+    { id: 1, name: 'Laptop' },
+    { id: 2, name: 'Smartphone' },
+    { id: 3, name: 'Headphones' }
+  ];
+
+  return (
+    <div>
+      <h1>Product List</h1>
+      <ul>
+        {products.map((product) => (
+          <li key={product.id}>
+            {/* Use Link to navigate to the dynamic product details page */}
+            <Link to={`/product/${product.id}`}>{product.name}</Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default ProductList;

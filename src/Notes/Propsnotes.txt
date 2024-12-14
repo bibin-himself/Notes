@@ -1,0 +1,50 @@
+PROPS In React
+
+> for Passing DATA from one component to another
+
+> Pass dynamic values ( strings, numbers, arrays, funcs )
+
+> Component Communication
+
+> read only. cannot modified by the child receiving them
+
+> Reusable with different dynamic data
+
+> one way data flow: From parent to child comp
+
+EXAMPLE:
+
+//child Comp
+const Greeting = ({name, age}) => {
+return <h1>Hello, {name}! {age ? `My Age is ${age}` : `Age is not provided`} </h1>;
+};
+
+//parent comp
+function App() {
+return (
+<div>
+<Greeting name="Alice" age="25" /> {/_ Passing 'name' prop _/}
+<Greeting name="Bob" /> {/_ Reusing component with different prop _/}
+</div>
+);
+}
+
+export default App;
+
+
+
+<!-- ///////////// -->
+
+
+
+DEFAULT PROPS
+
+> For setting default values for the props in component
+
+EXAMPLE:
+Greeting.defaultProps = {
+age: "30"
+}
+
+<Greetings age="25"/> >>>> rendering will be age 25
+<Greetings /> >>>> rendering will be age 30 by default

@@ -1,0 +1,24 @@
+LCM in React
+
+> Special Methods that
+> Get called at different stages of comp LC
+> Only used in class Components
+> useEffect hook can be used for this in Func Comp
+
+
+> Mounting: when a comp being INSERTED into the DOM : 
+> Updating: When a comp's STATE or PROP changes
+> Unmounting: when a comp being IREMOVED from the DOM
+
+
+
+
+useEffect(() => {
+        console.log('Component mounted');
+        
+        return () => {
+          console.log('Component will unmount');
+        };
+      }, []); // The empty dependency array ensures this effect only runs on mount and unmount
+    
+

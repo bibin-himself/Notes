@@ -1,0 +1,207 @@
+
+
+Memoization in React // ReactMemo()
+
+> Memoization is a performance optimization.
+
+> It is used to cache return values from expensive calculations.
+
+> Unnecessary re-rendering can affect the performance of our app.
+
+> export const ChildComponent = memo(function ChildComponent(){})
+
+> A higher-order component
+
+scenario >>>>>
+   While working with React components, you often pass state data as props from the parent to its child components.
+   If the state in the parent component changes, React will re-render the parent component and its child components; 
+   it does not matter if the child component received the data as props or not; 
+   React will re-render the child components because the parent component re-rendered.
+   With memo, you can skip re-rending a child component when the props passed to it from the parent component did not change.
+
+
+
+EXAMPLE >>>>
+
+        import React, { useState } from 'react';
+        
+        // Memoized ProductList component
+        const ProductList = React.memo(({ searchTerm }) => {
+          console.log('ProductList rendered');
+          const products = ['Apple', 'Banana', 'Orange', 'Mango', 'Grapes'];
+        
+          return (
+            <div>
+              {products
+                .filter((product) => product.toLowerCase().includes(searchTerm.toLowerCase()))
+                .map((product, index) => (
+                  <div key={index}>{product}</div>
+                ))}
+            </div>
+          );
+        });
+        
+        
+        /// Cart Component
+        const Cart = ({ cart }) => {
+          console.log('Cart rendered');
+          return (
+            <div>
+              <h3>Cart Items</h3>
+              {cart.length === 0 ? <p>No items in cart</p> : cart.join(', ')}
+            </div>
+          );
+        };
+
+
+
+/// APP
+const App = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [cart, setCart] = useState([]);
+
+  const addToCart = (item) => {
+    setCart([...cart, item]);
+  };
+
+  return (
+    <div>
+      <h1>Product Store</h1>
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Search for a product..."
+      />
+      <button onClick={() => addToCart('Banana')}>Add Banana to Cart</button>
+
+      <ProductList searchTerm={searchTerm} />
+      <Cart cart={cart} />
+    </div>
+  );
+};
+
+export default App;
+
+
+
+
+
+
+<!-- //////////// -->
+
+
+USEMEMO()
+
+> useMemo is a React Hook
+> Stores the result of a calculation from a pure function 
+> So it can be reused without doing the calculation again 
+> Between updates to the screen(re-renders).
+> Optimize React applications.
+
+> Can be used if you're performing an expensive calculation
+
+> const cachedValue = useMemo(calculateValue, dependencies)
+> 2 parameters: calculateValue & dependencies
+> calculateValue:  Function calculating the value you want to cache. 
+                   The function passed in should be pure, 
+                   It takes no parameters and returns any type.
+> dependencies: list of all reactive values referenced inside the calculateValue code.
+                React will compare each dependency with its previous value
+
+
+
+
+
+
+
+
+
+
+EXAMPLE
+
+            import React, { useState, useMemo } from "react";
+
+            const products = [
+              { id: 1, name: "Laptop", category: "Electronics", price: 1000 },
+              { id: 2, name: "Headphones", category: "Electronics", price: 200 },
+              { id: 3, name: "Shoes", category: "Fashion", price: 150 },
+              { id: 4, name: "T-shirt", category: "Fashion", price: 30 },
+              { id: 5, name: "Coffee Maker", category: "Home Appliances", price: 80 },
+            ];
+
+            const ProductList = () => {
+              const [category, setCategory] = useState("All");
+              const [discount, setDiscount] = useState("");
+
+
+
+              // useMemo to memoize filtered products based on category
+              const filteredProducts = useMemo(() => {
+                console.log("Filtering products");
+                if (category === "All") return products;
+                return products.filter((product) => product.category === category);
+              }, [category]);
+
+
+
+              // useMemo to calculate the total price based on filtered products
+              const totalPrice = useMemo(() => {
+                console.log("Calculating total price");
+                return (
+                  filteredProducts.reduce((total, product) => total + product.price, 0) *
+                  (1 - discount / 100)
+                );
+              }, [filteredProducts, discount]);
+
+
+              return (
+                <div>
+                  <h1>Product Store</h1>
+
+                  <label>
+                    Select Category:
+                    <select value={category} onChange={(e) => setCategory(e.target.value)}>
+                      <option value="All">All</option>
+                      <option value="Electronics">Electronics</option>
+                      <option value="Fashion">Fashion</option>
+                      <option value="Home Appliances">Home Appliances</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    Discount (%):
+                    <input
+                      type="number"
+                      value={discount}
+                      onChange={(e) => setDiscount(Number(e.target.value))}
+                    />
+                  </label>
+
+                  <h2>Products:</h2>
+                  <ul>
+                    {filteredProducts.map((product) => (
+                      <li key={product.id}>
+                        {product.name} - ${product.price}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <h2>Total Price: ${totalPrice.toFixed(2)}</h2>
+                </div>
+              );
+            };
+
+            export default ProductList;
+
+
+
+
+
+
+
+
+
+
+
+

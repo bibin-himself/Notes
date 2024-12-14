@@ -1,0 +1,62 @@
+
+
+STYLING
+
+> Inline styles, css stylesheets, styled components
+
+
+> INLINE STYLING: 
+    <div style={{color:"red", fontSize="25"}}></div>
+
+
+> CSS StyleSheets:
+    creating css file > importing in the component > use className
+
+> ClassName is used to avoid conflict 'CLASS' used in class based components.'CLASS' is resered for that.
+
+
+> Styled Components :
+     >write CSS in JavaScript.
+     >creates a unique class name for each style
+     >can also pass props to dynamically style components
+
+     
+
+  EXAMPLE:       (for simpler eg, refer Compo.jsx)
+     // App.js
+import React from 'react';
+import styled from 'styled-components';
+
+// Define a styled button component
+const Button = styled.button`
+  background-color: ${(props) => (props.primary ? 'blue' : 'white')};
+  color: ${(props) => (props.primary ? 'white' : 'blue')};
+  font-size: 16px;
+  margin: 10px;
+  padding: 10px 20px;
+  border: 2px solid blue;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${(props) => (props.primary ? 'darkblue' : 'lightblue')};
+  }
+`;
+
+const Container = styled.div`
+  text-align: center;
+  padding: 50px;
+  background-color: #f0f0f0;
+`;
+
+const App = () => {
+  return (
+    <Container>
+      <h1>Styled Components Example</h1>
+      <Button primary>Primary Button</Button>
+      <Button>Secondary Button</Button>
+    </Container>
+  );
+};
+
+export default App;

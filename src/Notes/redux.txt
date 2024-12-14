@@ -1,0 +1,87 @@
+
+REDUX
+
+> state management library that allows you to manage the state of your JavaScript applications
+> provides a set of utilities and conventions for writing Redux logic
+
+> The key components 
+
+ > Store : 
+   * Store is like a giant container that holds all the data for your application.
+   * Single source of truth for application's state
+   * Any component in your application can access it to retrieve and update data.
+     *** import { configureStore } from '@reduxjs/toolkit' ***
+     *** const store = configureStore({
+          reducer: {
+          todo: todoReducer,}
+         }) ***
+
+
+ 
+ > Dispatch : 
+   * Function or an object provided by the store.
+   * Allows you to -send an action to update the state- of the application
+   * Dispatches actions through the reducers.
+     *** import { useDispatch } from 'react-redux'
+     *** const dispatch = useDispatch() ***
+     *** dispatch(action) ***
+     *** dispatch(addTodo(input)); ***
+
+ 
+ 
+ > Actions :
+   * It is an object that describes what changes need to be made to the state of the application
+   * Sends data from your application to the Redux store 
+   * Serves as the only way to update the store.
+   * Simplifies the process of creating actions by using createSlice.
+     *** import {createSlice} from '@reduxjs/toolkit'
+     *** const todoSlice = createSlice({
+          name: 'todo',
+          initialState: [],
+          reducers: {}
+         }) ***
+     *** export const { addTodo, removeTodo } = todoSlice.actions ***
+ 
+
+
+ > Reducers :
+   * Pure functions that specify how the state of your application changes in response to an action
+   * Take the current state and an action as arguments and return a new state
+   * Responsible for updating the state of your application
+   * Only way to update the state of your application
+   * Used to define the logic of your application
+
+     *** import {createSlice} from '@reduxjs/toolkit'
+     *** const todoSlice = createSlice({
+          name: 'todo',
+          initialState: [],
+          reducers: {}
+         }) ***
+     *** export default todoReducer = todoSlice.reducer ***
+
+
+  > UseSelector : 
+    * Used to access and read data from the Redux store state of your application
+    * lets your functional components read data from the Redux store
+    * Selects a specific part of the state from the Redux store
+    * used to select and read pieces of state from the store.
+    
+      *** import { useSelector } from 'react-redux'; ***
+      *** const {todoList} = useSelector((state) => state.todo); ***
+
+
+
+
+
+
+
+
+
+>>>MORE>>>>
+
+  >  createSlice: 
+    * Used to define the logic of your application
+    * Manages the state of a specific feature or part of your application
+    * Simplifies the process of creating reducers and action creators.
+    * Automatically generates reducer functions
+    * Handles immutability using the Immer library allow you to "mutate" the state directly while keeping the updates immutable.
