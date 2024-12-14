@@ -9,12 +9,34 @@ Git Commands
 > git push -u origin main
 
 
+Updating New Changes
+
+> git add .
+> git commit -m "new changes"
+> git push origin main
+
+
+
+
+Git Configuration
+ > git config --global user.name "username"
+ > git config --global user.email "email"
+ > 
+
+
+
 
 * Push changes to a remote branch: git push origin branchName
 
-
-*Check your current branch: git branch --show-current
+* Check your current branch: git branch --show-current
+* Clone an existing repository : git clone https://github.com/username/RepoName.git
+* Add a new file: git add fileName
+* Switch to a different branch: git checkout branchName
+* Merge changes from one branch to another: git merge branchName
 * Resolve conflicts: git merge --abort
 * Remove a remote branch: git push origin --delete branchName
 * Delete a local branch: git branch -D branchName
 * Pull changes from a remote branch: git pull origin branchName
+* Checking Status: git status
+
+
