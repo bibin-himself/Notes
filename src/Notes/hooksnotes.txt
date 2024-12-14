@@ -3,8 +3,10 @@
 HOOKS
 
 > Functions that provide functional components with the ability to use states, LC methods and manage side effects.
-
-> reuse logic 
+> Pass custom data to your component
+> share state between components
+> Reuse logic
+> Extract logic from components and share it between components
 
 > useState : 
   > Manage states. 

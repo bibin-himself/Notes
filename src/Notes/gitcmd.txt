@@ -13,7 +13,19 @@ Updating New Changes
 
 > git add .
 > git commit -m "new changes"
-> git push origin main
+> git push 
+
+Use ***git push*** if you're working on a tracked branch and want a simpler command.
+Use ***git push origin main** for clarity or when working with multiple remotes or branches.
+
+
+Pulling Changes
+
+* Pull changes from a remote branch: git pull or git pull origin branchName
+
+  Use ***git pull*** for convenience if the branch has an upstream branch configured.
+  Use ***git pull origin branchname*** when you want full control over which remote and branch to pull from.
+
 
 
 
@@ -21,22 +33,29 @@ Updating New Changes
 Git Configuration
  > git config --global user.name "username"
  > git config --global user.email "email"
- > 
 
 
 
 
-* Push changes to a remote branch: git push origin branchName
 
 * Check your current branch: git branch --show-current
 * Clone an existing repository : git clone https://github.com/username/RepoName.git
 * Add a new file: git add fileName
 * Switch to a different branch: git checkout branchName
+* Create a new branch: git checkout -b branchName
+* Delete a local branch: git branch -D branchName
+
+
+* Checking Status: git status
 * Merge changes from one branch to another: git merge branchName
 * Resolve conflicts: git merge --abort
 * Remove a remote branch: git push origin --delete branchName
-* Delete a local branch: git branch -D branchName
-* Pull changes from a remote branch: git pull origin branchName
-* Checking Status: git status
 
 
+git stash: Temporarily saves (stashes) your uncommitted changes
+    git stash -u: Includes untracked files in the stash.
+    git stash save "message": Saves the stash with a description.
+
+
+git stash pop : Applies the most recent stash entry back to your working directory and removes it from the stash stack.
+     When you’re ready to resume your work after stashing changes.
