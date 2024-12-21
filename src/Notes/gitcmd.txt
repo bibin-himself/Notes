@@ -19,7 +19,7 @@ Use ***git push*** if you're working on a tracked branch and want a simpler comm
 Use ***git push origin main** for clarity or when working with multiple remotes or branches.
 
 
-Pulling Changes
+Pulling Changes in Git
 
 * Pull changes from a remote branch: git pull or git pull origin branchName
 
@@ -40,8 +40,8 @@ Undoing Changes
  > git reset --mixed HEAD~1: Undo the last commit and unstage changes.
  > git reset --soft HEAD~3: Undo the last 3 commits but keep changes staged.
  > git reset --hard HEAD~1: Completely undo the last commit and discard changes.
- > git revert <commit-hash>: Create a new commit that undoes a previous commit.
- > git reset --hard <commit-hash>: Undo to a specific commit and discard changes.
+ > git revert <commit-hash number>: Create a new commit that undoes a previous commit.
+ > git reset --hard <commit-hash number>: Undo to a specific commit and discard changes.
 
 
 
