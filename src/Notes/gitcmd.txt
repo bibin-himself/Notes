@@ -28,6 +28,9 @@ Pulling Changes in Git
 
 
 
+To change File name
+*go to the folder
+ > git mv oldFileName.js newFileName.js
 
 
 Git Configuration
