@@ -1,0 +1,98 @@
+
+
+Event Propagations
+
+* Dictates how events travel through the Document Object Model (DOM) when an event occurs
+* Determines in which order the elements receive the event
+
+
+* Phases of Event Propagation
+
+   HTML → BODY → FORM → DIV → P (capturing phase, the first listener), and then:
+   P → DIV → FORM → BODY → HTML (bubbling phase, the second listener).
+
+   root (e.g: document or window)  >>>> target (e.g: a clicked button or input field) >>>>>  root (travels upward through the DOM tree, backs up to the root)
+
+  
+  > Capture Phase
+    * When an event is triggered, it first travels from the root of the DOM tree down towards the target element
+    * Phase where the event reaches the root of the DOM tree
+    * Event handlers attached to the root of the DOM tree are executed during this phase​​.
+
+
+  > Target Phase
+    * Phase where the event reaches the target element
+    * Event handlers attached to the target element are executed during this phase​​.
+  
+  
+  > Bubbling Phase 
+    * In this phase, the event bubbles up from the target element to the root of the DOM tree
+  
+
+
+  > Control Event Propagation
+  
+    * StopPropagation(): Stops the event from propagating further.
+
+    * StopImmediatePropagation(): Stops the event and prevents other listeners on the same element from firing.
+
+    * PreventDefault(): Prevents the default browser behavior (e.g., stopping form  submission or link navigation).
+
+
+
+Example: 
+
+      
+  
+  
+      <div id="div1">
+          Component 1
+          <div id="div2">
+              component 2
+              <div id="div3">
+                  component 3
+              </div>
+          </div>
+      </div>
+  
+      <!-- Javascript code for event bubbling -->
+  
+          let div1 = document.querySelector("#div1");
+          let div2 = document.querySelector("#div2");
+          let div3 = document.querySelector("#div3");
+  
+          div1.addEventListener("click", function (event) {
+              alert("Component 1 event clicked");
+          });
+  
+          div2.addEventListener("click", function (event) {
+              alert("Component 2 event clicked");
+          });
+  
+          div3.addEventListener("click", function (event) {
+              alert("Component 3 event clicked");
+          });
+
+
+          <style>
+          #div1 {
+              background-color: lightgreen;
+              padding: 24px;
+              border: 1px solid black;
+  
+          }
+  
+          #div2 {
+              background-color: yellow;
+              padding: 18px;
+              border: 1px solid black;
+  
+          }
+  
+          #div3 {
+              background-color: orange;
+              border: 1px solid black;
+          }
+      </style>
+
+
