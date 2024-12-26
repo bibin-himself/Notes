@@ -39,6 +39,11 @@ Event Propagations
     * PreventDefault(): Prevents the default browser behavior (e.g., stopping form  submission or link navigation).
 
 
+You only need to explicitly set the third parameter to true if you want the event listener to operate during the capturing phase instead of the default bubbling phase.
+
+
+
+
 
 Example: 
 
@@ -63,15 +68,18 @@ Example:
   
           div1.addEventListener("click", function (event) {
               alert("Component 1 event clicked");
-          });
+              event.stopPropagation();
+          }, true);  //line 42
   
           div2.addEventListener("click", function (event) {
               alert("Component 2 event clicked");
-          });
+              event.stopPropagation();
+          }, true);
   
           div3.addEventListener("click", function (event) {
               alert("Component 3 event clicked");
-          });
+              event.stopPropagation();
+          }, true);
 
 
           <style>
