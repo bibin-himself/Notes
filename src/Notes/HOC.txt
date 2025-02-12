@@ -1,0 +1,87 @@
+
+
+
+Higher Order Components (HOC)
+ > A function that takes a component as an argument
+   and returns a new component
+ > Does not modify the original component 
+ > Used to reuse code between components
+ > Used to add functionality, new props, new state to components
+
+
+> Advantages: 
+  * Reusability
+  * Modularity
+  * Extensibility
+  * Flexibility
+
+> Disadvantages:
+  * Complexity
+  * Performance
+  * Debugging
+
+
+
+
+
+
+EXAMPLE:
+
+    import React, { useState, useEffect } from 'react';
+
+    // The HOC that adds loading functionality//
+
+    const withLoading = (WrappedComponent) => {
+      return (props) => {
+        const [loading, setLoading] = useState(true);
+        const [data, setData] = useState(null);
+
+        useEffect(() => {
+          // Simulate data fetching//
+          setTimeout(() => {
+            setData("Data Loaded!");
+            setLoading(false);
+          }, 2000); // Simulate a 2-second data fetching
+        }, []);
+
+        if (loading) {
+          return <div>Loading...</div>; // Display loading state
+        }
+
+        return <WrappedComponent data={data} {...props} />; // Pass the data to the wrapped component
+      };
+    };
+
+    export default withLoading;
+
+
+    //////// The component that uses the HOC to add loading functionality//
+
+    import React from 'react';
+
+    const DataDisplay = ({ data }) => {
+      return <div>{data}</div>;
+    };
+
+    export default DataDisplay;
+
+
+   
+   //////// The main app component that uses the HOC to add loading functionality ////////
+
+    import React from 'react';
+    import withLoading from './withLoading';  // Import the HOC
+    import DataDisplay from './DataDisplay';  // Import the original component
+    
+    const DataDisplayWithLoading = withLoading(DataDisplay); // Wrap the component
+    
+    const App = () => {
+      return (
+        <div>
+          <h1>My App</h1>
+          <DataDisplayWithLoading /> {/* Use the wrapped component */}
+        </div>
+      );
+    };
+    
+    export default App;

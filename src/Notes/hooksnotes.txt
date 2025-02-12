@@ -8,6 +8,8 @@ HOOKS
 > Reuse logic
 > Extract logic from components and share it between components
 
+
+
 > useState : 
   > Manage states. 
   > Returns a STATEFUL VALUE and an UPDATER FUNCTION to update it.
@@ -91,14 +93,6 @@ HOOKS
 
 
 
-const calc = (a, b) => {
-  const add = a + b;
-  const sub = a - b;
-}
-
-calc(1,2);
-
-
 
 > useContext :
   > Return the current value for a context.
@@ -133,34 +127,69 @@ calc(1,2);
   > Manging complex state management
   > use reducer functionngn
   > Used when next state depends on previous state
+  > const [state, dispatch] = useReducer(reducer, initial)
 
   >EXAMPLE : 
-            import React, { useReducer } from 'react';
-
+            import React, { useEffect } from "react";
+            import { useReducer, useState } from "react";
+            
             const initialState = { count: 0 };
-
-            function reducer(state, action) {
-            switch (action.type) {
-                case 'increment':
-                return { count: state.count + 1 };
-                case 'decrement':
-                return { count: state.count - 1 };
+            
+            const reducer = (state, action) => {
+              switch (action.type) {
+                case "INCREMENT":
+                  return {
+                    count: state.count + action.payload,
+                  };
+            
+                case "DECREMENT":
+                  return {
+                    count: state.count - action.payload,
+                  };
+            
+                case "RESET":
+                  return {
+                    count: initialState.count,
+                  };
                 default:
-                throw new Error();
-            }
-            }
-
-            function Counter() {
-            const [state, dispatch] = useReducer(reducer,initialState);
-
-            return (
-                <div>
-                <p>Count: {state.count}</p>
-                <button onClick={() => dispatch({ type:'increment' })}>Increment</button>
-                <button onClick={() => dispatch({ type:'decrement' })}>Decrement</button>
-                </div>
+                  return state;
+              }
+            };
+            
+            
+            const Rough = () => {
+            
+                const [state, dispatch] = useReducer(reducer, initialState);
+            
+                ///optional
+                const [delayedCount, setDelayedCount] = useState(0);
+            
+            
+                ///optional
+                useEffect(() => {
+                  const timer = setTimeout(() => {
+                    setDelayedCount(state.count);
+                  }, 3000);
+            
+                  return () => clearTimeout(timer);
+                }, [state.count])
+                
+            
+            
+                
+              return (
+              
+              <>
+              <h2>{delayedCount}</h2>
+              <button onClick={() => dispatch({ type: 'INCREMENT', payload: 1})}>ADD</button>
+              <button onClick={() => dispatch({type:'DECREMENT', payload: 1})}>Sub</button>
+              <button onClick={() => dispatch({type: 'RESET'})}>Reset</button>
+              </>
             );
-            }
+            };
+            
+            export default Rough;
+
 
 > useRef : 
   > Accesses DOM elements directly
@@ -170,12 +199,35 @@ calc(1,2);
 
 
 > useMemo : 
+  > Use when you want to memoize the result of a computation to avoid recalculating it unnecessarily.
   > Optimizes performance by memoizing expensive calculations.
   > memoize return value if no dependencies have changed.
   > Memoizing means storing the value as a cached value 
   > improves performance
 
+  > const memoizedValue = useMemo(() => computeExpensiveValue(dependencies), [dependencies]);
+
   >EXAMPLE : 
+          import React, { useMemo, useState } from 'react';
+
+          function ExpensiveCalculation({ numbers }) {
+    const [count, setCount] = useState(0);
+
+    // Memoizing the expensive computation
+    const total = useMemo(() => {
+        console.log('Calculating...');
+        return numbers.reduce((sum, num) => sum + num, 0);
+    }, [numbers]);
+
+    return (
+        <div>
+            <p>Total: {total}</p>
+            <button onClick={() => setCount(count + 1)}>Re-render ({count})</button>
+        </div>
+    );
+}
+
+
             import React, { useMemo, useState } from 'react';
 
             function calculate() {
@@ -224,8 +276,11 @@ calc(1,2);
 
 
 > useCallback : 
+  > Use when you want to memoize a function to ensure it does not get recreated unnecessarily.
   > Memoizes a callback FUNCTION and returns it.
   > Prevents unnecessary re-creations on re-renders.
+
+  > const memoizedCallback = useCallback(() => doSomething(dependencies), [dependencies]);
 
   >EXAMPLE : 
              import React, { useCallback, useState } from 'react';

@@ -85,3 +85,142 @@ REDUX
     * Simplifies the process of creating reducers and action creators.
     * Automatically generates reducer functions
     * Handles immutability using the Immer library allow you to "mutate" the state directly while keeping the updates immutable.
+
+
+
+  > Middleware
+    * Middleware in Redux is a powerful feature that allows you to intercept,   modify, or enhance actions before they reach the reducer.
+    * Middleware is a function that is called before the reducer is called.
+    * Middleware can be used to add
+      * additional logging, 
+      * API calls
+      * error handling, or 
+      * other functionality to the Redux store
+
+   
+   
+    > CREATING A MIDDLEWARE:
+
+    const middleware = (store) => (next) => (action) => {
+      // Do something before the action reaches the reducer
+      console.log('Dispatching:', action);
+
+      // Pass the action to the next middleware or the reducer
+      const result = next(action);
+
+      // Do something after the action has been processed by the reducer
+      console.log('New State:', store.getState());
+
+      return result;
+    };
+
+
+
+
+    EXAMPLE: 
+
+    const loggerMiddleware = (store) => (next) => (action) => {
+      if (typeof action === 'function') {
+        return action(store.dispatch, store.getState);
+      }
+      return result = next(action);   
+      return result;
+    };
+
+
+    
+     * store: The Redux store. You can use store.getState() to access the current state or store.dispatch() to dispatch new actions.
+
+     * next: A function that passes the action to the next middleware or the reducer.
+
+     * action: The action being dispatched.
+
+
+
+
+    > Thunk Middleware
+      * A middleware that allows you to write asynchronous logic in your Redux store
+      * It allows to dispatch functions (thunks) instead of plain action objects
+
+
+Middleware is a function (or a series of functions) that provides a third-party extension point between dispatching an action and the moment it reaches the reducer.
+
+//Middleware is a way to extend Redux with custom logic.
+
+//It sits between dispatching an action and the reducer.
+
+//Common use cases include logging, async operations, and analytics.
+
+//Popular middleware libraries include Redux Thunk, Redux Saga, and Redux Logger.
+
+
+ANOTHER EXAMPLE:
+
+          1.Check if the action has a type property (required by Redux).
+          2.Check if the action has a payload property (custom requirement).
+          3.Log an error and stop the action if it fails validation.
+
+Step 1: Create the Middleware
+
+          const actionValidationMiddleware = (store) => (next) => (action) => {
+  // Check if the action has a `type` property //
+          if (!action.type) {
+            console.error('Action Validation Failed: Action must have a `type` property.        ');
+            return;   // Stop the action from reaching the reducer
+          }
+
+  // Check if the action has a `payload` property //
+          if (!action.payload) {
+            console.error('Action Validation Failed: Action must have a `payload`         property.');
+            return;   // Stop the action from reaching the reducer
+          }
+
+  // If the action passes validation, pass it to the next middleware or reducer
+          return next(action);
+};
+
+
+Step 2: Apply the Middleware to the Store
+
+    import { createStore, applyMiddleware } from 'redux';
+    import rootReducer from './reducers';
+
+    const store = createStore(
+    rootReducer,
+    applyMiddleware(actionValidationMiddleware)
+    );
+
+(both in same store file)
+
+Step 3: Test the Middleware
+
+    import { createStore, applyMiddleware } from 'redux';
+    import rootReducer from './reducers';
+    import { addTodo, editTodo } from './actions';
+
+    store.dispatch({
+    type: 'ADD_TODO',
+    payload: 'Learn Redux Middleware',
+    });
+    // Expected output: "Added todo: Learn Redux Middleware"
+// This action has both a type and a payload, so it will pass validation and reach the reducer.
+
+
+
+    store.dispatch({
+      payload: 'This action has no type',
+    });
+    // Expected output: "Action Validation Failed: Action must have a `type` property."
+// this action has no type, so it will fail validation and not reach the reducer.
+
+    store.dispatch({
+      type: "DELETE_TODO",
+    })
+    // Expected output: "Action Validation Failed: Action must have a `payload` property."
+// this action has no payload, so it will fail validation and not reach the reducer.
+
+store.dispatch({
+      type: 'EDIT_TODO',
+      payload: 'edit todo',
+    });
+    // Expected output: "Edit todo: edit todo"

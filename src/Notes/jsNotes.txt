@@ -1,0 +1,31 @@
+
+
+CORS (Cross-Origin Resource Sharing) 
+Is a security feature that prevents unauthorized requests between different domains.
+ By default, browsers block cross-origin AJAX requests unless explicitly allowed.
+
+>  When Do You Need CORS?
+*Your frontend (React, Vue, Angular) is running on http://localhost:3000,
+ but the backend (Node.js/Express) is on http://localhost:5000.
+*Your API needs to be accessed from a different domain.
+*You're calling an API from JavaScript that is hosted on another domain.
+
+*npm install cors
+
+
+*  Use CORS in Express
+    Modify your server.js or app.js:
+
+const express = require("express");
+const cors = require("cors");
+
+const app = express();
+
+// Enable CORS for all routes
+app.use(cors());
+
+app.get("/", (req, res) => {
+  res.send("CORS is enabled!");
+});
+
+app.listen(5000, () => console.log("Server running on port 5000"));
