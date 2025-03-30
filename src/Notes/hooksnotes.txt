@@ -93,32 +93,252 @@ HOOKS
 
 
 
+import React, { useState } from "react";
+
+const WorkArea = () => {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [status, setStatus] = useState("idle"); // 'idle' | 'loading' | 'success' | 'error'
+
+  const fetchData = async () => {
+    if (status === "success") {
+      alert("Data was already fetched!");
+      return;
+    }
+
+    setStatus("loading");
+    setError(null);
+
+    try {
+      const response = await fetch(
+        "https://jsonplaceholder.typicode.com/todos"
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+
+      const result = await response.json();
+      setData(result);
+      setStatus("success");
+    } catch (error) {
+      setError(error.message);
+      setStatus("error");
+    }
+  };
+
+  const buttonText = {
+    idle: "Fetch Data",
+    loading: "Fetching...",
+    success: "✓ Data Fetched",
+    error: "⚠ Try Again",
+  };
+
+  const buttonColor = {
+    idle: "#2196F3",
+    loading: "#FFC107",
+    success: "#4CAF50",
+    error: "#F44336",
+  };
+
+  return (
+    <div style={{ padding: "20px" }}>
+      <button
+        onClick={fetchData}
+        disabled={status === "loading"}
+        style={{
+          padding: "8px 16px",
+          backgroundColor: buttonColor[status],
+          color: "white",
+          border: "none",
+          borderRadius: "4px",
+          cursor: status === "loading" ? "wait" : "pointer",
+          marginBottom: "20px",
+          minWidth: "120px",
+          transition: "all 0.3s ease",
+        }}
+      >
+        {buttonText[status]}
+      </button>
+
+      {status === "error" && (
+        <div style={{ color: "red", marginBottom: "10px" }}>Error: {error}</div>
+      )}
+
+      {data && (
+        <ul style={{ listStyle: "none", padding: 0 }}>
+          {data.slice(0, 5).map((item) => (
+            <li
+              key={item.id}
+              style={{
+                padding: "8px",
+                margin: "4px 0",
+                backgroundColor: "#f5f5f5",
+                borderRadius: "4px",
+              }}
+            >
+              {item.title}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+export default WorkArea;
+
+
+
+/////////////////////////
+
+
+
+
+
+
 
 > useContext :
+  > It's a way to share values (like state, functions, or any data) between components
+   without explicitly passing props through every level of the component tree.
   > Return the current value for a context.
-  > Allows you to ACCESS CONTEXT VALUES without having to pass props down manually
   > create context ( createContext() ) -->  consume context ( contextname.provider )  --> Wrap the context
   > useContext() used for access values
 
 
-  >EXAMPLE: 
+> Key Points
+  createContext(defaultValue): 
+    Creates a context object. The defaultValue is only used when a component doesn't have a matching Provider above it.
+
+  Context.Provider:
+    Every context object comes with a Provider component that allows consuming components to subscribe to context changes.
+
+  useContext(MyContext):
+    Accepts a context object and returns the current context value for that context.
+
+
+
+
+  >BASIC USAGE:
         import React, { useContext } from 'react';
 
-        const ThemeContext = React.createContext('light');
+          // 1. Create a context
+          const MyContext = React.createContext(defaultValue);
 
-        function ThemeSwitcher() {
-        const theme = useContext(ThemeContext);
+          // 2. Provide the context value
+          function App() {
+            return (
+              <MyContext.Provider value={/* some value */}>
+                <ChildComponent />
+              </MyContext.Provider>
+            );
+          }
 
-       return <p>Current theme: {theme}</p>;
-       }
+          // 3. Consume the context value
+          function ChildComponent() {
+            const contextValue = useContext(MyContext);
+            // use contextValue here
+          }
 
-       export default function App() {
-       return (
-       <ThemeContext.Provider value="dark">
-       <ThemeSwitcher />
-       </ThemeContext.Provider>
-       );
-       }
+  >EXAMPLE:
+
+
+src/
+├── contexts/          // All context logic here
+│   └── ThemeContext.js
+├── components/        // Reusable components
+│   ├── Toolbar.js
+│   └── ThemedButton.js
+└── App.js            // Main entry point
+
+
+1. Context File (contexts/ThemeContext.js)
+
+      import { createContext, useContext, useState } from 'react';
+
+      // Create context
+      export const ThemeContext = createContext();
+
+      // Provider component
+      export const ThemeProvider = ({ children }) => {
+        const [theme, setTheme] = useState('light');
+
+        const toggleTheme = () => {
+          setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+        };
+
+        return (
+          <ThemeContext.Provider value={{ theme, toggleTheme }}>
+            {children}
+          </ThemeContext.Provider>
+        );
+      };
+
+      // Custom hook for easy consumption
+      export const useTheme = () => useContext(ThemeContext);
+
+
+2. Button Component (components/ThemedButton.js)
+
+  import { useTheme } from '../contexts/ThemeContext';
+
+    export const ThemedButton = () => {
+      const { theme, toggleTheme } = useTheme();
+
+      return (
+        <button
+          onClick={toggleTheme}
+          style={{
+            background: theme === 'light' ? '#fff' : '#333',
+            color: theme === 'light' ? '#000' : '#fff',
+            padding: '10px 20px',
+            borderRadius: '5px',
+            cursor: 'pointer'
+          }}
+        >
+          Toggle Theme ({theme})
+        </button>
+      );
+    };
+
+
+
+3. Toolbar Component (components/Toolbar.js)
+
+  import { ThemedButton } from './ThemedButton';
+
+    export const Toolbar = () => {
+      return (
+        <div style={{ padding: '20px', border: '1px solid #ddd' }}>
+          <h2>Toolbar</h2>
+          <ThemedButton />
+        </div>
+      );
+    };
+
+
+4. Main App (App.js)
+
+    import { ThemeProvider } from './contexts/ThemeContext';
+    import { Toolbar } from './components/Toolbar';
+    
+    export default function App() {
+      return (
+        <ThemeProvider>
+          <div style={{ padding: '40px' }}>
+            <h1>App (Theme Provider Wrapper)</h1>
+            <Toolbar />
+          </div>
+        </ThemeProvider>
+      );
+    }
+
+
+
+
+
+/////////////////////////
+
 
 
 
