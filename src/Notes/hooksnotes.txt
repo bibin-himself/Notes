@@ -368,9 +368,9 @@ src/
                   };
             
                 case "RESET":
-                  return {
-                    count: initialState.count,
-                  };
+                  return (
+                    initialState
+                  );
                 default:
                   return state;
               }
@@ -411,14 +411,114 @@ src/
             export default Rough;
 
 
+
+
+//////////////////////////////////////
+
+
 > useRef : 
+  > lets you reference a value that's not needed for rendering
   > Accesses DOM elements directly
   > stores mutable values
   > without triggering re-render
+  > Basic Syntax : const ref = useRef(initialValue);
 
+Example 1: Accessing DOM Elements (Most Common Use)
+
+  import { useRef } from 'react';
+
+    function TextInputWithFocus() {
+      const inputRef = useRef(null);
+    
+      const handleClick = () => {
+        // Focus the input element
+        inputRef.current.focus();
+        // You can also access other DOM properties:
+        // inputRef.current.value = 'Hello';
+      };
+    
+      return (
+        <div>
+          <input ref={inputRef} type="text" />
+          <button onClick={handleClick}>Focus the input</button>
+        </div>
+      );
+    }
+
+
+Example 2: Storing Mutable Values (Like Instance Variables)
+
+    import React from 'react'
+import { useEffect, useState } from 'react';
+import { useRef } from 'react';
+
+const WorkArea = () => {
+  const [count, setCount] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const intervalRef = useRef();
+
+  useEffect(() => {
+    if (isRunning) {
+      intervalRef.current = setInterval(() => {
+        setCount((prevCount) => prevCount + 1);
+      }, 1000);
+    } else {
+      clearInterval(intervalRef.current);
+    }
+
+    return () => clearInterval(intervalRef.current);
+  }, [isRunning]);
+
+  const startTimer = () => {
+    setIsRunning(true);
+  };
+
+  const stopTimer = () => {
+    setIsRunning(false);
+  };
+
+  return (
+    <div>
+      <p>{count}</p>
+      {!isRunning ? (
+        <button onClick={startTimer}>Start Timer</button>
+      ) : (
+        <button onClick={stopTimer}>Stop Timer</button>
+      )}
+    </div>
+  );
+};
+
+export default WorkArea;
+
+
+///////////
+
+3. Video/Audio Players
+
+
+    function VideoPlayer() {
+  const videoRef = useRef(null);
+
+  const handlePlay = () => videoRef.current.play();
+  const handlePause = () => videoRef.current.pause();
+
+  return (
+    <div>
+      <video ref={videoRef} src="movie.mp4" />
+      <button onClick={handlePlay}>Play</button>
+      <button onClick={handlePause}>Pause</button>
+    </div>
+  );
+}
+
+
+
+  ///////////////////////////////////
 
 
 > useMemo : 
+  >A React Hook that memoizes (caches) expensive calculations to optimize performance by avoiding unnecessary recalculations on every render.
   > Use when you want to memoize the result of a computation to avoid recalculating it unnecessarily.
   > Optimizes performance by memoizing expensive calculations.
   > memoize return value if no dependencies have changed.
@@ -427,70 +527,138 @@ src/
 
   > const memoizedValue = useMemo(() => computeExpensiveValue(dependencies), [dependencies]);
 
-  >EXAMPLE : 
-          import React, { useMemo, useState } from 'react';
 
-          function ExpensiveCalculation({ numbers }) {
-    const [count, setCount] = useState(0);
+> EXAMPLE : 
 
-    // Memoizing the expensive computation
-    const total = useMemo(() => {
-        console.log('Calculating...');
-        return numbers.reduce((sum, num) => sum + num, 0);
-    }, [numbers]);
+src/
+├── components/
+│   ├── Filters.js      
+│   └── ProductList.js
+└── App.js
 
-    return (
-        <div>
-            <p>Total: {total}</p>
-            <button onClick={() => setCount(count + 1)}>Re-render ({count})</button>
-        </div>
-    );
+
+        import { useState } from 'react'
+            import './App.css'
+            import Filters from './components/Filters'
+            import ProductList from './components/ProductList'
+
+            function App() {
+            
+              const [products] = useState([
+                { id: 1, name: "Laptop", category: "electronics", price: 999, rating: 4.5 },
+                { id: 2, name: "T-shirt", category: "clothing", price: 20, rating: 3.8 },
+                { id: 3, name: "Headphones", category: "electronics", price: 150, rating: 4.2 }
+              ]);
+
+              const [filter, setFilter] = useState("all");
+              const [sortBy, setSortBy] = useState("price")
+
+
+              return (
+                <>
+                <Filters 
+                            filter={filter} 
+                            setFilter={setFilter}
+                            sortBy={sortBy}
+                            setSortBy={setSortBy}
+                          />
+                          <ProductList 
+                            products={products} 
+                            filter={filter} 
+                            sortBy={sortBy} 
+                          />
+
+
+                </>
+              )
+            }
+
+export default App
+
+
+
+
+import React from 'react'
+
+const Filters = ({ filter, setFilter, sortBy, setSortBy }) => {
+  return (
+    <div style={{ marginBottom: '20px' }}>
+      <h3>Filters</h3>
+      <select 
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+        style={{ marginRight: '10px' }}
+      >
+        <option value="all">All</option>
+        <option value="electronics">Electronics</option>
+        <option value="clothing">Clothing</option>
+      </select>
+
+      <label style={{ marginRight: '10px' }}>
+        <input
+          type="radio"
+          checked={sortBy === 'price'}
+          onChange={() => setSortBy('price')}
+        /> Price
+      </label>
+      <label>
+        <input
+          type="radio"
+          checked={sortBy === 'rating'}
+          onChange={() => setSortBy('rating')}
+        /> Rating
+      </label>
+    </div>
+  )
 }
 
-
-            import React, { useMemo, useState } from 'react';
-
-            function calculate() {
-             let result = 0;
-             for (let i = 0; i < 1000000000; i++) {
-               result += i;
-             }
-             return result;
-           }
-
-           function App1() {
-             const [count, setCount] = useState(0);
-
-             const value = calculate();
-
-             return (
-               <div className="App">
-                 <button onClick={() => setCount(count + 1)}>Increment Count</button>
-                 <p>Count: {count}</p>
-               </div>
-             );
-           }
-
-           const value = useMemo(expensiveFunction, [...dependencyArray])
+export default Filters
 
 
-            <!--- //////const [dependentCount, setDependentCount] = useState(10);////// ---!>
 
 
-           const value = useMemo(calculate, [dependentCount]);
 
-           return (
-             <div className="App">
+      
 
-               // ...
+import React from 'react'
+import { useMemo } from 'react';
 
-               <button onClick={() => setDependentCount(dependentCount + 1)}>
-                 Increment Dependent Count
-               </button>
-               <p>Dependent Count: {dependentCount}</p>
-             </div>
-           );
+const ProductList = ({products, filter, sortBy}) => {
 
+    const filteredProducts = useMemo(() => {
+        console.log('Filtering products...');
+        return filter === 'all' 
+          ? products 
+          : products.filter(p => p.category === filter);
+      }, [products, filter]);
+    
+      const sortedProducts = useMemo(() => {
+        console.log('Sorting products...');
+        return [...filteredProducts].sort((a, b) => {
+          return sortBy === 'price' 
+            ? a.price - b.price 
+            : b.rating - a.rating;
+        });
+      }, [filteredProducts, sortBy]);
+    
+  return (
+    <div>
+    <h3>Products ({sortedProducts.length})</h3>
+    <ul style={{ listStyle: 'none', padding: 0 }}>
+      {sortedProducts.map(product => (
+        <li key={product.id} style={{ margin: '10px 0', padding: '10px', border: '1px solid #eee' }}>
+          <strong>{product.name}</strong> - ${product.price} 
+          <span style={{ color: 'green' }}> ★ {product.rating}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+  )
+}
+
+export default ProductList
+
+          
 
 
 
